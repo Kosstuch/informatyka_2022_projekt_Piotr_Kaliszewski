@@ -5,7 +5,7 @@ using namespace sf;
 int main()
 {
     srand(time(0));
-    RenderWindow app(VideoMode(520, 450), "Arkanoid!");
+    RenderWindow app(VideoMode(1366, 768), "Arkanoid!");
     app.setFramerateLimit(60);
     // £aduj tekstury
     Texture t1, t2, t3, t4;
@@ -25,13 +25,13 @@ int main()
 
     // Ustaw sprite przycisków menu
     Sprite sPlayButton(tPlayButton), sExitButton(tExitButton);
-    sPlayButton.setPosition(200, 200);
-    sExitButton.setPosition(200, 300);
+    sPlayButton.setPosition(730, 300);
+    sExitButton.setPosition(730, 400);
 
     // Ustaw sprite klocków
     Sprite block[1000];
     int n = 0;
-    for (int i = 1; i <= 10; i++)
+    for (int i = 1; i <= 20; i++)
         for (int j = 1; j <= 10; j++)
         {
             block[n].setTexture(t1);
@@ -40,8 +40,8 @@ int main()
         }
 
     // Ustaw zmienne kulki
-    float dx = 6, dy = 5;
-    float x = 300, y = 300;
+    float dx = 8, dy = 6;
+    float x = 500, y = 500;
     float speed = 0.5;
     x += dx * speed;
     y += dy * speed;
@@ -81,20 +81,20 @@ int main()
 
                         // SprawdŸ kolizje z klockami
                         for (int i = 0; i < n; i++)
-                            if (FloatRect(x + 3, y + 3, 6, 6).intersects(block[i].getGlobalBounds()))
+                            if (FloatRect(x + 10, y + 10, 20, 20).intersects(block[i].getGlobalBounds()))
                             {
                                 block[i].setPosition(-100, 0); dx = -dx;
                             }
 
                         // SprawdŸ kolizje z ramk¹
-                        if (x < 0 || x>520)  dx = -dx;
-                        if (y < 0 || y>450)  dy = -dy;
+                        if (x < 0 || x>1366)  dx = -dx;
+                        if (y < 0 || y>768)  dy = -dy;
 
                         // Steruj paletk¹ gracza
-                        if (Keyboard::isKeyPressed(Keyboard::Right)) sPaddle.move(6, 0);
-                        if (Keyboard::isKeyPressed(Keyboard::Left)) sPaddle.move(-6, 0);
+                        if (Keyboard::isKeyPressed(Keyboard::Right)) sPaddle.move(18, 0);
+                        if (Keyboard::isKeyPressed(Keyboard::Left)) sPaddle.move(-18, 0);
                         // SprawdŸ kolizjê z paletk¹ gracza
-                        if (FloatRect(x, y, 12, 12).intersects(sPaddle.getGlobalBounds())) dy = -(rand() % 5 + 2);
+                        if (FloatRect(x, y, 40, 40).intersects(sPaddle.getGlobalBounds())) dy = -(rand() % 5 + 2);
 
                         // WyjdŸ z gry, jeœli gracz naciœnie klawisz Escape
                         if (Keyboard::isKeyPressed(Keyboard::Escape))
@@ -104,8 +104,8 @@ int main()
                         }
 
                         // Zmniejsz lub zwiêksz prêdkoœæ gry, jeœli gracz naciœnie klawisz S
-                        if (Keyboard::isKeyPressed(Keyboard::S)) speed = 0.5;
-                        if (Keyboard::isKeyPressed(Keyboard::S) && speed < 1) speed = 1;
+                        if (Keyboard::isKeyPressed(Keyboard::W) && speed < 2) speed += 0.1;
+                        if (Keyboard::isKeyPressed(Keyboard::S) && speed > 0.2) speed -= 0.1;
 
                         sBall.setPosition(x, y);
 
