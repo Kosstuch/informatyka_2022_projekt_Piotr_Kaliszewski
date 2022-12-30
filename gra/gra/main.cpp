@@ -2,6 +2,18 @@
 #include <time.h>
 using namespace sf;
 
+class Player
+{
+private:
+    int score;
+
+public:
+    Player() : score(0) {}
+
+    void addScore(int points) { score += points; }
+    int getScore() const { return score; }
+};
+
 int main()
 {
     srand(time(0));
@@ -16,7 +28,11 @@ int main()
 
     // Ustaw sprite
     Sprite sBackground(t2), sBall(t3), sPaddle(t4);
-    sPaddle.setPosition(300, 440);
+
+    Vector2u windowSize = app.getSize();
+    FloatRect paddleBounds = sPaddle.getLocalBounds();
+    float paddleY = windowSize.y - paddleBounds.height;
+    sPaddle.setPosition(300, paddleY-20);
 
     // £aduj tekstury przycisków menu
     Texture tPlayButton, tExitButton;
@@ -31,7 +47,7 @@ int main()
     // Ustaw sprite klocków
     Sprite block[1000];
     int n = 0;
-    for (int i = 1; i <= 20; i++)
+    for (int i = 1; i <= 30; i++)
         for (int j = 1; j <= 10; j++)
         {
             block[n].setTexture(t1);
@@ -45,6 +61,15 @@ int main()
     float speed = 0.5;
     x += dx * speed;
     y += dy * speed;
+
+    Player player;
+    Font font;
+    font.loadFromFile("images/arial.ttf"); // £aduj czcionkê z pliku
+    Text scoreText;
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(24);
+    scoreText.setFillColor(Color::Black);
+    scoreText.setPosition(100, 700);
 
     while (app.isOpen())
     {
@@ -75,6 +100,7 @@ int main()
                             }
                         }
 
+
                         // Poruszaj kulk¹
                         x += dx * speed;
                         y += dy * speed;
@@ -84,7 +110,9 @@ int main()
                             if (FloatRect(x + 10, y + 10, 20, 20).intersects(block[i].getGlobalBounds()))
                             {
                                 block[i].setPosition(-100, 0); dx = -dx;
+                                player.addScore(1); // Dodaj 1 punkt do wyniku gracza po zniszczeniu bloku
                             }
+                        scoreText.setString("Score: " + std::to_string(player.getScore()));
 
                         // SprawdŸ kolizje z ramk¹
                         if (x < 0 || x>1366)  dx = -dx;
@@ -113,6 +141,7 @@ int main()
                         app.clear();
                         app.draw(sBackground);
                         app.draw(sBall);
+                        app.draw(scoreText);
                         app.draw(sPaddle);
                         for (int i = 0; i < n; i++)
                             app.draw(block[i]);
